@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Us Time 💕 — Couples Game Night</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+    :root {
+      --bg: #08071A;
+      --card: rgba(255,255,255,0.05);
+      --card-b: rgba(255,255,255,0.09);
+      --rose: #FF6B9D;
+      --gold: #FFD93D;
+      --mint: #6BCB77;
+      --purple: #C77DFF;
+      --blue: #74D7FF;
+      --text: #F2E8FF;
+      --muted: rgba(242,232,255,0.5);
+      --radius: 20px;
+    }
+
+    html { height: 100%; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      min-height: 100%;
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ── STARS ── */
+    #stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+    .s {
+      position:absolute; background:#fff; border-radius:50%;
+      animation: tw var(--d,3s) var(--dl,0s) infinite alternate ease-in-out;
+    }
+    @keyframes tw {
+      from { opacity: var(--a,0.15); }
+      to   { opacity: var(--b,0.7); transform:scale(1.6); }
+    }
+
+    /* ── APP SHELL ── */
+    #app {
+      position:relative; z-index:1;
+      width:100%; max-width:460px;
+      min-height:100svh;
+      display:flex; flex-direction:column;
+      padding:0 18px;
+      overflow-y:auto; overflow-x:hidden;
+    }
+
+    /* ── SCREENS ── */
+    .screen { display:none; flex-direction:column; align-items:center; width:100%; padding-bottom:60px; }
+    .screen.on { display:flex; animation: fadeUp .38s cubic-bezier(.22,.84,.44,1) both; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(22px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── HOME ── */
+    .home-top {
+      text-align:center;
+      padding: 56px 0 36px;
+    }
+    .eyebrow {
+      font-size:11px; letter-spacing:3.5px; text-transform:uppercase;
+      color:var(--muted); margin-bottom:14px;
+    }
+    .logo {
+      font-family:'Playfair Display', serif;
+      font-size:52px; font-weight:700; line-height:1;
+      background: linear-gradient(135deg, var(--rose) 0%, var(--gold) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .logo-sub { font-size:15px; color:var(--muted); margin-top:10px; font-weight:400; }
+
+    .share-strip {
+      width:100%;
+      background: var(--card);
+      border:1px solid var(--card-b);
+      border-radius:14px;
+      padding:14px 18px;
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:22px;
+      backdrop-filter:blur(12px);
+    }
+    .share-strip p { font-size:13px; color:var(--muted); }
+    .share-strip strong { display:block; font-size:14px; color:var(--text); }
+    .copy-btn {
+      padding:8px 16px; border-radius:10px;
+      border:1px solid var(--card-b);
+      background: rgba(255,255,255,0.08);
+      color:var(--text); font-family:'Nunito',sans-serif;
+      font-size:13px; font-weight:700; cursor:pointer;
+      white-space:nowrap; flex-shrink:0;
+      transition:background .2s;
+    }
+    .copy-btn:active { background:rgba(255,255,255,0.18); }
+
+    .games-list { width:100%; display:flex; flex-direction:column; gap:13px; }
+
+    .gcard {
+      background:var(--card); border:1px solid var(--card-b);
+      border-radius:var(--radius);
+      padding:18px 20px;
+      display:flex; align-items:center; gap:15px;
+      cursor:pointer;
+      transition:transform .18s, background .18s;
+      backdrop-filter:blur(12px);
+    }
+    .gcard:active { transform:scale(.97); background:rgba(255,255,255,0.09); }
+    .gcard:hover  { background:rgba(255,255,255,0.08); }
+
+    .gicon {
+      width:54px; height:54px; border-radius:15px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:27px; flex-shrink:0;
+    }
+    .ginfo h3 { font-family:'Playfair Display',serif; font-size:17px; font-weight:700; margin-bottom:3px; }
+    .ginfo p  { font-size:12.5px; color:var(--muted); line-height:1.4; font-weight:400; }
+    .garrow   { margin-left:auto; font-size:20px; opacity:.35; flex-shrink:0; }
+
+    /* ── GAME HEADER ── */
+    .ghdr {
+      width:100%; display:flex; align-items:center;
+      padding:22px 0 20px; gap:12px;
+    }
+    .back {
+      width:42px; height:42px; border-radius:13px;
+      background:var(--card); border:1px solid var(--card-b);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; font-size:19px; flex-shrink:0;
+      transition:background .2s;
+    }
+    .back:active { background:rgba(255,255,255,0.12); }
+    .gtitle { font-family:'Playfair Display',serif; font-size:21px; font-weight:700; }
+
+    /* ── PROGRESS ── */
+    .prog-wrap { width:100%; margin-bottom:22px; }
+    .prog-info  { display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:7px; }
+    .prog-track { width:100%; height:4px; background:rgba(255,255,255,0.09); border-radius:2px; overflow:hidden; }
+    .prog-fill  {
+      height:100%; border-radius:2px;
+      background: linear-gradient(90deg, var(--rose), var(--gold));
+      transition: width .55s ease;
+    }
+
+    /* ── BIG CARD ── */
+    .bigcard {
+      width:100%;
+      background:var(--card); border:1px solid var(--card-b);
+      border-radius:26px;
+      padding:30px 22px;
+      text-align:center;
+      backdrop-filter:blur(14px);
+      margin-bottom:20px;
+      min-height:190px;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+    }
+    .bigcard.pop { animation: cardPop .42s cubic-bezier(.175,.885,.32,1.275) both; }
+    @keyframes cardPop {
+      from { opacity:0; transform:scale(.88) rotateY(12deg); }
+      to   { opacity:1; transform:scale(1) rotateY(0); }
+    }
+
+    .ccat  { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+    .cemoji { font-size:46px; margin-bottom:14px; display:block; }
+    .cq    { font-family:'Playfair Display',serif; font-size:21px; font-weight:400; line-height:1.48; }
+
+    /* ── WYR ── */
+    .wyr-opts { width:100%; display:flex; flex-direction:column; gap:11px; }
+    .wyr-opt {
+      width:100%; padding:17px 18px;
+      border-radius:15px; border:2px solid var(--card-b);
+      background:var(--card); color:var(--text);
+      font-family:'Nunito',sans-serif; font-size:14.5px; font-weight:600;
+      cursor:pointer; text-align:center;
+      transition: all .22s; backdrop-filter:blur(10px);
+    }
+    .wyr-opt:active { transform:scale(.97); }
+    .wyr-opt.A { border-color:var(--rose); background:rgba(255,107,157,.14); }
+    .wyr-opt.B { border-color:var(--gold);  background:rgba(255,217,61,.12);  }
+    .wyr-div   { text-align:center; font-size:12px; font-weight:700; color:var(--muted); }
+
+    .reveal-note {
+      width:100%; text-align:center;
+      font-size:13px; color:var(--muted);
+      line-height:1.6; margin-top:8px;
+    }
+    .reveal-note strong { color:var(--text); }
+
+    /* ── NHIE ── */
+    .nhie-scores { display:flex; gap:12px; width:100%; margin-bottom:20px; }
+    .nscore {
+      flex:1; background:var(--card); border:1px solid var(--card-b);
+      border-radius:16px; padding:14px; text-align:center;
+      backdrop-filter:blur(10px);
+    }
+    .ns-lbl { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); margin-bottom:5px; }
+    .ns-num { font-family:'Playfair Display',serif; font-size:34px; font-weight:700; }
+
+    .nhie-btns { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .nhie-btn {
+      padding:21px 14px;
+      border-radius:16px; border:2px solid;
+      background:transparent; color:var(--text);
+      font-family:'Nunito',sans-serif; font-size:15px; font-weight:700;
+      cursor:pointer; text-align:center; transition:all .22s;
+    }
+    .nhie-btn.hv { border-color:var(--mint); }
+    .nhie-btn.hv.sel { background:rgba(107,203,119,.2); }
+    .nhie-btn.nv { border-color:var(--rose); }
+    .nhie-btn.nv.sel { background:rgba(255,107,157,.18); }
+
+    /* ── TOD ── */
+    .tod-pick { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .tod-btn {
+      padding:26px 14px;
+      border-radius:20px; border:2px solid;
+      background:transparent; color:var(--text);
+      font-family:'Playfair Display',serif; font-size:22px; font-weight:700;
+      cursor:pointer;
+      display:flex; flex-direction:column; align-items:center; gap:7px;
+      transition:all .22s;
+    }
+    .tod-btn span { font-size:12px; font-family:'Nunito',sans-serif; font-weight:600; color:var(--muted); }
+    .tod-btn.tr { border-color:var(--purple); }
+    .tod-btn.tr:active { background:rgba(199,125,255,.16); }
+    .tod-btn.da { border-color:var(--gold); }
+    .tod-btn.da:active { background:rgba(255,217,61,.13); }
+
+    .tod-tag {
+      display:inline-flex; align-items:center;
+      padding:5px 13px; border-radius:20px;
+      font-size:11px; font-weight:700; letter-spacing:.7px;
+      margin-bottom:14px;
+    }
+    .tod-tag.truth { background:rgba(199,125,255,.18); color:var(--purple); border:1px solid rgba(199,125,255,.3); }
+    .tod-tag.dare  { background:rgba(255,217,61,.15);  color:var(--gold);   border:1px solid rgba(255,217,61,.3);  }
+
+    /* ── QUIZ ── */
+    .quiz-hint {
+      width:100%; text-align:center;
+      font-size:13px; color:var(--muted); font-style:italic;
+      margin-bottom:13px;
+    }
+    .quiz-ta {
+      width:100%;
+      background:var(--card); border:1.5px solid var(--card-b);
+      border-radius:16px; padding:15px 18px;
+      color:var(--text); font-family:'Nunito',sans-serif;
+      font-size:15.5px; font-weight:500;
+      resize:none; height:108px; outline:none;
+      transition:border-color .2s; margin-bottom:12px;
+      backdrop-filter:blur(10px);
+    }
+    .quiz-ta:focus { border-color:var(--purple); }
+    .quiz-ta::placeholder { color:rgba(242,232,255,.25); }
+
+    /* ── BUCKET ── */
+    .bucket-header {
+      width:100%;
+      background:linear-gradient(135deg,rgba(255,107,157,.13),rgba(255,217,61,.09));
+      border:1px solid rgba(255,107,157,.22);
+      border-radius:16px; padding:16px 20px;
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:16px;
+    }
+    .bh-text p  { font-size:12px; color:var(--muted); }
+    .bh-text h4 { font-size:15px; font-weight:700; }
+    .bh-num     { font-family:'Playfair Display',serif; font-size:38px; font-weight:700; color:var(--rose); }
+
+    .btabs {
+      display:flex; gap:8px; width:100%;
+      overflow-x:auto; padding-bottom:4px; margin-bottom:18px;
+      scrollbar-width:none;
+    }
+    .btabs::-webkit-scrollbar { display:none; }
+    .btab {
+      flex-shrink:0; padding:7px 15px; border-radius:20px;
+      border:1px solid var(--card-b); background:var(--card);
+      color:var(--muted); font-family:'Nunito',sans-serif;
+      font-size:12.5px; font-weight:700; cursor:pointer; transition:all .2s;
+    }
+    .btab.on { background:var(--rose); border-color:var(--rose); color:#fff; }
+
+    .bitems { width:100%; display:flex; flex-direction:column; gap:10px; }
+    .bitem {
+      display:flex; align-items:center;
+      background:var(--card); border:1.5px solid var(--card-b);
+      border-radius:16px; padding:15px 18px; gap:13px;
+      cursor:pointer; transition:all .22s;
+      backdrop-filter:blur(10px);
+    }
+    .bitem.on { border-color:rgba(255,107,157,.4); background:rgba(255,107,157,.08); }
+    .bem  { font-size:27px; flex-shrink:0; }
+    .btxt { flex:1; }
+    .btxt h4 { font-size:14.5px; font-weight:700; margin-bottom:2px; }
+    .btxt p  { font-size:12px; color:var(--muted); }
+    .bheart { width:38px; height:38px; display:flex; align-items:center; justify-content:center; font-size:21px; flex-shrink:0; transition:transform .28s; }
+    .bheart.on { transform:scale(1.35); }
+
+    .b-empty { text-align:center; padding:40px 0; color:var(--muted); font-size:14.5px; line-height:1.6; }
+
+    /* ── BUTTONS ── */
+    .btn1 {
+      width:100%; padding:18px; border-radius:15px; border:none;
+      background:linear-gradient(135deg,var(--rose),#e04d88);
+      color:#fff; font-family:'Nunito',sans-serif;
+      font-size:15.5px; font-weight:700; cursor:pointer;
+      transition:transform .18s, opacity .18s; margin-top:8px;
+    }
+    .btn1:active { transform:scale(.97); opacity:.9; }
+
+    .btn2 {
+      width:100%; padding:15px; border-radius:15px;
+      border:1px solid var(--card-b); background:var(--card);
+      color:var(--text); font-family:'Nunito',sans-serif;
+      font-size:14.5px; font-weight:600; cursor:pointer;
+      transition:all .2s; margin-top:8px; backdrop-filter:blur(10px);
+    }
+    .btn2:active { background:rgba(255,255,255,0.11); }
+
+    /* ── HOW TO ── */
+    .howto {
+      width:100%; background:var(--card); border:1px solid var(--card-b);
+      border-radius:18px; padding:22px;
+      margin-bottom:20px; backdrop-filter:blur(10px);
+    }
+    .howto h3 { font-family:'Playfair Display',serif; font-size:17px; margin-bottom:9px; }
+    .howto p  { font-size:13.5px; color:var(--muted); line-height:1.65; }
+
+    /* ── RESULT ── */
+    .result {
+      text-align:center; padding:36px 0;
+      animation: cardPop .4s cubic-bezier(.175,.885,.32,1.275) both;
+    }
+    .result .re  { font-size:68px; margin-bottom:16px; }
+    .result .rt  {
+      font-family:'Playfair Display',serif; font-size:30px; font-weight:700;
+      margin-bottom:10px;
+      background:linear-gradient(135deg,var(--rose),var(--gold));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .result .rs  { font-size:15px; color:var(--muted); line-height:1.6; }
+
+    /* ── CONFETTI ── */
+    .cf {
+      position:fixed; pointer-events:none; z-index:9999;
+      border-radius:2px; animation:cffall linear forwards;
+    }
+    @keyframes cffall {
+      0%   { transform:translateY(-10px) rotate(0deg);   opacity:1; }
+      100% { transform:translateY(105vh) rotate(700deg); opacity:0; }
+    }
+
+    .safe { height:48px; flex-shrink:0; }
+  </style>
+</head>
+<body>
+
+<div id="stars"></div>
+<div id="app">
+
+  <!-- ══ HOME ══ -->
+  <div class="screen on" id="s-home">
+    <div class="home-top">
+      <p class="eyebrow">✨ For the two of you</p>
+      <h1 class="logo">Us&nbsp;Time</h1>
+      <p class="logo-sub">Games to play together, no matter the distance 💌</p>
+    </div>
+
+    <div class="share-strip">
+      <div>
+        <p>Share this link with your partner</p>
+        <strong id="page-url">Loading…</strong>
+      </div>
+      <button class="copy-btn" id="copy-btn" onclick="copyURL()">Copy 🔗</button>
+    </div>
+
+    <div class="games-list">
+      <div class="gcard" onclick="go('wyr')">
+        <div class="gicon" style="background:rgba(255,107,157,.14)">🎲</div>
+        <div class="ginfo">
+          <h3>Would You Rather</h3>
+          <p>Make choices — will you and your partner pick the same?</p>
+        </div>
+        <div class="garrow">›</div>
+      </div>
+      <div class="gcard" onclick="go('nhie')">
+        <div class="gicon" style="background:rgba(107,203,119,.14)">🙋</div>
+        <div class="ginfo">
+          <h3>Never Have I Ever</h3>
+          <p>Wholesome edition — learn sweet things about each other!</p>
+        </div>
+        <div class="garrow">›</div>
+      </div>
+      <div class="gcard" onclick="go('tod')">
+        <div class="gicon" style="background:rgba(255,217,61,.14)">💌</div>
+        <div class="ginfo">
+          <h3>Truth or Dare</h3>
+          <p>Sweet & virtual-friendly dares made for long distance 💕</p>
+        </div>
+        <div class="garrow">›</div>
+      </div>
+      <div class="gcard" onclick="go('quiz')">
+        <div class="gicon" style="background:rgba(199,125,255,.14)">🧠</div>
+        <div class="ginfo">
+          <h3>How Well Do You Know Me?</h3>
+          <p>Answer about your partner and compare your answers!</p>
+        </div>
+        <div class="garrow">›</div>
+      </div>
+      <div class="gcard" onclick="go('bucket')">
+        <div class="gicon" style="background:rgba(116,215,255,.14)">✈️</div>
+        <div class="ginfo">
+          <h3>Couples Bucket List</h3>
+          <p>Heart the things you dream of doing together someday 💛</p>
+        </div>
+        <div class="garrow">›</div>
+      </div>
+    </div>
+    <div class="safe"></div>
+  </div>
+
+  <!-- ══ WOULD YOU RATHER ══ -->
+  <div class="screen" id="s-wyr">
+    <div class="ghdr">
+      <div class="back" onclick="home()">←</div>
+      <div class="gtitle">Would You Rather 🎲</div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-info"><span id="wyr-ci">Q 1</span><span id="wyr-tot">of 20</span></div>
+      <div class="prog-track"><div class="prog-fill" id="wyr-pf" style="width:0%"></div></div>
+    </div>
+    <div class="bigcard" id="wyr-card">
+      <span class="cemoji">🎲</span>
+      <div class="ccat">Would you rather…</div>
+      <div class="cq" id="wyr-q">—</div>
+    </div>
+    <div class="wyr-opts" id="wyr-opts">
+      <button class="wyr-opt" id="wyr-a" onclick="wyrPick('A')">—</button>
+      <div class="wyr-div">— or —</div>
+      <button class="wyr-opt" id="wyr-b" onclick="wyrPick('B')">—</button>
+    </div>
+    <div id="wyr-reveal" style="display:none"></div>
+    <div id="wyr-nxt" style="display:none"><button class="btn1" onclick="wyrNext()">Next Question →</button></div>
+    <div class="safe"></div>
+  </div>
+
+  <!-- ══ NEVER HAVE I EVER ══ -->
+  <div class="screen" id="s-nhie">
+    <div class="ghdr">
+      <div class="back" onclick="home()">←</div>
+      <div class="gtitle">Never Have I Ever 🙋</div>
+    </div>
+    <div class="nhie-scores">
+      <div class="nscore">
+        <div class="ns-lbl">I Have! ✅</div>
+        <div class="ns-num" id="nhie-hnum" style="color:var(--mint)">0</div>
+      </div>
+      <div class="nscore">
+        <div class="ns-lbl">Never! ❌</div>
+        <div class="ns-num" id="nhie-nnum" style="color:var(--rose)">0</div>
+      </div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-info"><span id="nhie-ci">Round 1</span><span id="nhie-tot">of 20</span></div>
+      <div class="prog-track"><div class="prog-fill" id="nhie-pf" style="width:0%"></div></div>
+    </div>
+    <div class="bigcard" id="nhie-card">
+      <span class="cemoji">🙋</span>
+      <div class="ccat">Never Have I Ever…</div>
+      <div class="cq" id="nhie-s">—</div>
+    </div>
+    <div class="nhie-btns" id="nhie-btns">
+      <button class="nhie-btn hv" id="nhie-hbtn" onclick="nhiePick('hv')">✅ I Have!</button>
+      <button class="nhie-btn nv" id="nhie-nbtn" onclick="nhiePick('nv')">❌ Never!</button>
+    </div>
+    <div id="nhie-nxt" style="display:none; margin-top:16px"><button class="btn1" onclick="nhieNext()">Next One →</button></div>
+    <div class="safe"></div>
+  </div>
+
+  <!-- ══ TRUTH OR DARE ══ -->
+  <div class="screen" id="s-tod">
+    <div class="ghdr">
+      <div class="back" onclick="home()">←</div>
+      <div class="gtitle">Truth or Dare 💌</div>
+    </div>
+    <div id="tod-choose">
+      <div class="howto">
+        <h3>How to play</h3>
+        <p>Take turns choosing! One person picks Truth or Dare each round. All dares are 100% virtual-friendly — made for long-distance couples 💕</p>
+      </div>
+      <div class="tod-pick">
+        <button class="tod-btn tr" onclick="todPick('truth')">💜<br>Truth<span>Spill it!</span></button>
+        <button class="tod-btn da" onclick="todPick('dare')">⚡<br>Dare<span>Do it!</span></button>
+      </div>
+    </div>
+    <div id="tod-wrap" style="display:none;width:100%">
+      <div class="bigcard pop" id="tod-card">
+        <div class="tod-tag" id="tod-tag">TRUTH</div>
+        <div class="cq" id="tod-txt">—</div>
+      </div>
+      <button class="btn1" onclick="todPickAgain()">Pick Again</button>
+      <button class="btn2" onclick="todReset()">Back to Choosing</button>
+    </div>
+    <div class="safe"></div>
+  </div>
+
+  <!-- ══ QUIZ ══ -->
+  <div class="screen" id="s-quiz">
+    <div class="ghdr">
+      <div class="back" onclick="home()">←</div>
+      <div class="gtitle">How Well Do You Know Me? 🧠</div>
+    </div>
+    <div class="prog-wrap">
+      <div class="prog-info"><span id="quiz-ci">Q 1</span><span id="quiz-tot">of 20</span></div>
+      <div class="prog-track"><div class="prog-fill" id="quiz-pf" style="width:0%"></div></div>
+    </div>
+    <div class="bigcard" id="quiz-card">
+      <span class="cemoji">🧠</span>
+      <div class="ccat">About your partner…</div>
+      <div class="cq" id="quiz-q">—</div>
+    </div>
+    <div class="quiz-hint" id="quiz-hint">💭 Both write your answers, then reveal &amp; compare!</div>
+    <textarea class="quiz-ta" id="quiz-ta" placeholder="Type your answer here…"></textarea>
+    <button class="btn1" id="quiz-nxt" onclick="quizNext()">Reveal &amp; Next →</button>
+    <div class="safe"></div>
+  </div>
+
+  <!-- ══ BUCKET LIST ══ -->
+  <div class="screen" id="s-bucket">
+    <div class="ghdr">
+      <div class="back" onclick="home()">←</div>
+      <div class="gtitle">Bucket List ✈️</div>
+    </div>
+    <div class="bucket-header">
+      <div class="bh-text">
+        <p>Things you want to do together</p>
+        <h4>Your hearted dreams 💛</h4>
+      </div>
+      <div class="bh-num" id="bc-num">0</div>
+    </div>
+    <div class="btabs" id="btabs">
+      <div class="btab on"  onclick="bTab('all',this)">All</div>
+      <div class="btab" onclick="bTab('travel',this)">Travel ✈️</div>
+      <div class="btab" onclick="bTab('xp',this)">Experiences 🎭</div>
+      <div class="btab" onclick="bTab('food',this)">Food 🍝</div>
+      <div class="btab" onclick="bTab('home',this)">Stay In 🛋️</div>
+      <div class="btab" onclick="bTab('mile',this)">Milestones 🌟</div>
+      <div class="btab" onclick="bTab('wish',this)">💛 My List</div>
+    </div>
+    <div class="bitems" id="bitems"></div>
+    <div class="safe"></div>
+  </div>
+
+</div><!-- #app -->
+
+<script>
+/* ══ STARS ══ */
+(function(){
+  const el = document.getElementById('stars');
+  for(let i=0;i<90;i++){
+    const s = document.createElement('div'); s.className='s';
+    const sz = Math.random()*2.2+.4;
+    s.style.cssText=`width:${sz}px;height:${sz}px;
+      left:${Math.random()*100}%;top:${Math.random()*100}%;
+      --a:${(Math.random()*.2+.04).toFixed(2)};--b:${(Math.random()*.55+.25).toFixed(2)};
+      --d:${(Math.random()*3+2).toFixed(1)}s;--dl:${(Math.random()*4).toFixed(1)}s`;
+    el.appendChild(s);
+  }
+})();
+
+/* ══ NAV ══ */
+let curScreen = 'home';
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
+  const el = document.getElementById('s-'+id);
+  el.classList.add('on');
+  document.getElementById('app').scrollTop = 0;
+  curScreen = id;
+}
+function home(){ showScreen('home'); }
+function go(id){
+  if(id==='wyr')    initWYR();
+  if(id==='nhie')   initNHIE();
+  if(id==='tod')    initTOD();
+  if(id==='quiz')   initQuiz();
+  if(id==='bucket') initBucket();
+  showScreen(id);
+}
+
+/* ══ SHARE URL ══ */
+(function(){
+  const u = window.location.href;
+  const short = u.length > 42 ? u.slice(0,40)+'…' : u;
+  document.getElementById('page-url').textContent = short;
+})();
+function copyURL(){
+  navigator.clipboard.writeText(window.location.href).then(()=>{
+    const b = document.getElementById('copy-btn');
+    b.textContent = '✅ Copied!';
+    setTimeout(()=>b.textContent='Copy 🔗', 2200);
+  });
+}
+
+/* ══ CONFETTI ══ */
+function confetti(n=45,cx){
+  const colors=['#FF6B9D','#FFD93D','#6BCB77','#C77DFF','#74D7FF'];
+  for(let i=0;i<n;i++){
+    const p=document.createElement('div'); p.className='cf';
+    p.style.left=(cx!=null ? cx : Math.random()*100)+'vw';
+    p.style.top='-12px';
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    const sz=Math.random()*9+5;
+    p.style.width=sz+'px'; p.style.height=sz+'px';
+    p.style.borderRadius=Math.random()>.5?'50%':'3px';
+    p.style.animationDuration=(Math.random()*1.6+1.4)+'s';
+    p.style.animationDelay=(Math.random()*.5)+'s';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),3500);
+  }
+}
+function miniConfetti(){ confetti(18, 35+Math.random()*30); }
+
+/* ══════════════════════════════════════════
+   WOULD YOU RATHER
+══════════════════════════════════════════ */
+const WYR = [
+  {a:"Go on a spontaneous road trip with zero plan",b:"Plan every detail of your perfect dream vacation"},
+  {a:"Cook every meal together at home",b:"Try a brand-new restaurant together every week"},
+  {a:"A cozy movie marathon night in with blankets",b:"Explore a city neither of you has ever been to"},
+  {a:"Text each other all day long",b:"One long, uninterrupted call every evening"},
+  {a:"Relive the very first day we met",b:"Get a glimpse of our future together"},
+  {a:"Live in a cozy cabin in the mountains",b:"A beachfront house right by the sea"},
+  {a:"Be morning people who catch every sunrise together",b:"Night owls who stargaze and stay up late"},
+  {a:"Adopt a dog 🐶",b:"Adopt a cat 🐱"},
+  {a:"Travel to 20 different countries together",b:"Live abroad in one foreign country for a whole year"},
+  {a:"A fancy candlelit dinner date",b:"A homemade picnic under the stars"},
+  {a:"A big beautiful wedding with everyone you love",b:"An intimate, just-the-two-of-you elopement"},
+  {a:"Learn to cook an amazing new cuisine together",b:"Take dance classes together"},
+  {a:"Live in a buzzing, vibrant city",b:"A quiet, peaceful countryside"},
+  {a:"Read each other's minds for a day",b:"Feel each other's emotions for a day"},
+  {a:"Have your love story turned into a movie",b:"Have your love story turned into a novel"},
+  {a:"A week camping with no phones or wifi",b:"A week in a luxury hotel with all the amenities"},
+  {a:"A magic teleporter so you can visit each other instantly",b:"The ability to freeze time whenever you're together"},
+  {a:"Fast-forward to see your best future memory",b:"Relive your most perfect past moment"},
+  {a:"Always find the perfect words in every situation",b:"Always know exactly how your partner is feeling"},
+  {a:"Unlimited budget for one single epic trip",b:"Small budget but 12 trips every year"},
+];
+
+let wyrIdx=0;
+
+function initWYR(){
+  wyrIdx=0;
+  // restore card if needed
+  restoreCard('wyr-card','🎲','Would you rather…','wyr-q');
+  document.getElementById('wyr-opts').style.display='flex';
+  document.getElementById('wyr-reveal').style.display='none';
+  document.getElementById('wyr-reveal').innerHTML='';
+  document.getElementById('wyr-nxt').style.display='none';
+  renderWYR();
+}
+
+function renderWYR(){
+  if(wyrIdx>=WYR.length){ wyrEnd(); return; }
+  const q=WYR[wyrIdx];
+  document.getElementById('wyr-q').textContent='';
+  document.getElementById('wyr-a').textContent='🅰️ '+q.a;
+  document.getElementById('wyr-b').textContent='🅱️ '+q.b;
+  document.getElementById('wyr-a').className='wyr-opt';
+  document.getElementById('wyr-b').className='wyr-opt';
+  document.getElementById('wyr-a').onclick=()=>wyrPick('A');
+  document.getElementById('wyr-b').onclick=()=>wyrPick('B');
+  document.getElementById('wyr-reveal').style.display='none';
+  document.getElementById('wyr-reveal').innerHTML='';
+  document.getElementById('wyr-nxt').style.display='none';
+  document.getElementById('wyr-ci').textContent='Q '+(wyrIdx+1);
+  document.getElementById('wyr-pf').style.width=(wyrIdx/WYR.length*100)+'%';
+  pop('wyr-card');
+}
+
+function wyrPick(side){
+  document.getElementById('wyr-a').className='wyr-opt'+(side==='A'?' A':'');
+  document.getElementById('wyr-b').className='wyr-opt'+(side==='B'?' B':'');
+  document.getElementById('wyr-a').onclick=null;
+  document.getElementById('wyr-b').onclick=null;
+  const q=WYR[wyrIdx];
+  const chosen=side==='A'?q.a:q.b;
+  const rv=document.getElementById('wyr-reveal');
+  rv.style.display='block';
+  rv.innerHTML=`<div class="reveal-note">You chose: <strong>${chosen}</strong><br>💬 Tell your partner your pick &amp; why!</div>`;
+  document.getElementById('wyr-nxt').style.display='block';
+}
+
+function wyrNext(){ wyrIdx++; renderWYR(); }
+
+function wyrEnd(){
+  document.getElementById('wyr-card').innerHTML=`<div class="result"><div class="re">🎉</div><div class="rt">All Done!</div><div class="rs">All 20 questions complete!<br>Hope you found some fun surprises 💕</div></div>`;
+  document.getElementById('wyr-opts').style.display='none';
+  document.getElementById('wyr-reveal').style.display='none';
+  document.getElementById('wyr-nxt').innerHTML='<button class="btn1" onclick="initWYR();document.getElementById(\'wyr-opts\').style.display=\'flex\'">Play Again 🔄</button>';
+  document.getElementById('wyr-nxt').style.display='block';
+  confetti();
+}
+
+/* ══════════════════════════════════════════
+   NEVER HAVE I EVER
+══════════════════════════════════════════ */
+const NHIE = [
+  "Stayed up all night just talking to someone I care about",
+  "Cried at a genuinely happy ending in a movie",
+  "Made a playlist specifically for one person",
+  "Fallen asleep on a video call",
+  "Written a heartfelt letter by hand to someone I love",
+  "Kept a journal for more than a month straight",
+  "Planned a surprise for someone special",
+  "Stargazed for more than an hour without looking away",
+  "Danced like nobody was watching — in public",
+  "Cooked a full meal from scratch to impress someone",
+  "Saved a voice message just to listen to it again later",
+  "Learned something new purely because of someone I love",
+  "Taken a spontaneous trip with absolutely no plan",
+  "Spent an entire day in bed watching shows without guilt",
+  "Wished on a shooting star",
+  "Sent flowers to someone who wasn't expecting them",
+  "Cried at a stranger's wedding",
+  "Spent more than 3 hours on one phone call",
+  "Set someone as my phone wallpaper",
+  "Said 'I miss you' first",
+];
+
+let nhieIdx=0, nhieH=0, nhiieN=0;
+
+function initNHIE(){
+  nhieIdx=0; nhieH=0; nhiieN=0;
+  document.getElementById('nhie-hnum').textContent='0';
+  document.getElementById('nhie-nnum').textContent='0';
+  restoreCard('nhie-card','🙋','Never Have I Ever…','nhie-s');
+  document.getElementById('nhie-btns').style.display='grid';
+  document.getElementById('nhie-hbtn').className='nhie-btn hv';
+  document.getElementById('nhie-nbtn').className='nhie-btn nv';
+  document.getElementById('nhie-hbtn').onclick=()=>nhiePick('hv');
+  document.getElementById('nhie-nbtn').onclick=()=>nhiePick('nv');
+  document.getElementById('nhie-nxt').style.display='none';
+  renderNHIE();
+}
+
+function renderNHIE(){
+  if(nhieIdx>=NHIE.length){ nhieEnd(); return; }
+  document.getElementById('nhie-s').textContent=NHIE[nhieIdx];
+  document.getElementById('nhie-ci').textContent='Round '+(nhieIdx+1);
+  document.getElementById('nhie-pf').style.width=(nhieIdx/NHIE.length*100)+'%';
+  document.getElementById('nhie-hbtn').className='nhie-btn hv';
+  document.getElementById('nhie-nbtn').className='nhie-btn nv';
+  document.getElementById('nhie-hbtn').onclick=()=>nhiePick('hv');
+  document.getElementById('nhie-nbtn').onclick=()=>nhiePick('nv');
+  document.getElementById('nhie-nxt').style.display='none';
+  pop('nhie-card');
+}
+
+function nhiePick(side){
+  if(side==='hv'){ nhieH++; document.getElementById('nhie-hbtn').classList.add('sel'); }
+  else           { nhiieN++; document.getElementById('nhie-nbtn').classList.add('sel'); }
+  document.getElementById('nhie-hbtn').onclick=null;
+  document.getElementById('nhie-nbtn').onclick=null;
+  document.getElementById('nhie-hnum').textContent=nhieH;
+  document.getElementById('nhie-nnum').textContent=nhiieN;
+  document.getElementById('nhie-nxt').style.display='block';
+}
+
+function nhieNext(){ nhieIdx++; renderNHIE(); }
+
+function nhieEnd(){
+  const msg = nhieH>nhiieN ? "Quite the adventurer! 🌟" :
+              nhiieN>nhieH ? "So much left to explore together 💛" :
+                             "Perfectly balanced — a mystery and an open book 💜";
+  document.getElementById('nhie-card').innerHTML=`<div class="result"><div class="re">✨</div><div class="rt">That's a wrap!</div><div class="rs">You said "I Have!" ${nhieH} times and "Never!" ${nhiieN} times.<br><em>${msg}</em></div></div>`;
+  document.getElementById('nhie-btns').style.display='none';
+  document.getElementById('nhie-nxt').innerHTML='<button class="btn1" onclick="initNHIE()">Play Again 🔄</button>';
+  document.getElementById('nhie-nxt').style.display='block';
+  confetti();
+}
+
+/* ══════════════════════════════════════════
+   TRUTH OR DARE
+══════════════════════════════════════════ */
+const TRUTHS=[
+  "What's your absolute favorite memory of us so far?",
+  "What song reminds you of me the most — and why?",
+  "What's the very first thing you want to do when we're together?",
+  "What's a dream you have for our future together?",
+  "What's something small I do that makes your day so much better?",
+  "What's a weird habit of mine that you secretly find adorable?",
+  "Is there something you've always wanted to tell me but haven't?",
+  "What would our absolutely perfect day together look like?",
+  "What's one thing our relationship has taught you about love?",
+  "What do you miss most about me right now?",
+  "When did you first realize you had feelings for me?",
+  "What's your favorite thing about us as a couple?",
+  "What's something on your bucket list that you hope we do together?",
+  "What's a hidden talent I might not know about?",
+  "If you could describe our relationship in three words, what would they be?",
+  "What's your happiest thought when you imagine our future?",
+  "What's something you want to get better at — for yourself, for us?",
+  "What movie or show perfectly captures our vibe as a couple?",
+  "What's the thing about me you'd miss most if I wasn't around?",
+  "What's a moment between us that you never want to forget?",
+];
+
+const DARES=[
+  "📸 Send me the most recent photo in your camera roll — no picking allowed!",
+  "🎵 Sing the first chorus of your favorite song out loud right now",
+  "🪟 Show me your current view — what are you looking at right this second?",
+  "💌 Record a voice message of at least 3 things you love about me",
+  "✏️ Draw a quick portrait of me and share the result immediately",
+  "🎭 Do your best impression of me — for at least 10 seconds!",
+  "😂 Tell me a joke you genuinely think is hilarious",
+  "🎙️ Share three unpopular opinions you actually hold",
+  "💝 Show me one thing in your room that's meaningful to you",
+  "📱 Read me the last text you sent to someone other than me!",
+  "🏃 Do 10 jumping jacks right now — I'll wait!",
+  "🤳 Send me your most embarrassing photo you'll allow me to see 😅",
+  "🎨 Describe our whole relationship as an emoji story — 5 emojis maximum!",
+  "💭 Tell me about the weirdest dream you've had recently",
+  "🎧 Show me your top 3 Spotify songs or artists right now",
+  "✍️ Write me a tiny poem — at least 4 lines — right now!",
+  "💃 Show me your actual happy dance — the real unfiltered one!",
+  "📊 Share your phone screen time from this week — be brave!",
+  "🌟 Tell me three things you're genuinely grateful for right now",
+  "🎤 Record a 15-second voice note saying something super sweet to me",
+];
+
+let usedT=[], usedD=[], todType=null;
+
+function initTOD(){
+  usedT=[]; usedD=[];
+  document.getElementById('tod-choose').style.display='block';
+  document.getElementById('tod-wrap').style.display='none';
+}
+
+function todPick(type){
+  todType=type;
+  const pool=type==='truth'?TRUTHS:DARES;
+  const used=type==='truth'?usedT:usedD;
+  if(used.length>=pool.length){ used.length=0; }
+  const avail=pool.reduce((a,_,i)=>used.includes(i)?a:[...a,i],[]);
+  const ri=avail[Math.floor(Math.random()*avail.length)];
+  used.push(ri);
+  const tag=document.getElementById('tod-tag');
+  tag.textContent=type==='truth'?'💜 TRUTH':'⚡ DARE';
+  tag.className='tod-tag '+(type==='truth'?'truth':'dare');
+  document.getElementById('tod-txt').textContent=pool[ri];
+  document.getElementById('tod-choose').style.display='none';
+  const wrap=document.getElementById('tod-wrap');
+  wrap.style.display='block';
+  document.getElementById('tod-card').className='bigcard pop';
+}
+
+function todPickAgain(){ todPick(todType||'truth'); }
+
+function todReset(){
+  document.getElementById('tod-choose').style.display='block';
+  document.getElementById('tod-wrap').style.display='none';
+}
+
+/* ══════════════════════════════════════════
+   COUPLES QUIZ
+══════════════════════════════════════════ */
+const QUIZ=[
+  "What's my partner's absolute favorite comfort food?",
+  "What would my partner do with a completely free Saturday?",
+  "What's my partner's biggest pet peeve?",
+  "What superpower would my partner choose — and why?",
+  "What's my partner's go-to karaoke song?",
+  "How does my partner take their coffee or tea?",
+  "What is my partner most likely doing at 10pm on a weeknight?",
+  "What's one word my partner would use to describe themselves?",
+  "What's my partner's dream travel destination?",
+  "What's something my partner is really proud of but doesn't talk about much?",
+  "How does my partner like to be comforted when they're sad?",
+  "What's my partner's secret hidden talent?",
+  "What's my partner's favorite season — and what do they love about it?",
+  "What would my partner's perfect meal look like?",
+  "What's something my partner has always wanted to learn or try?",
+  "What does my partner do when they're nervous?",
+  "What's my partner's love language?",
+  "What movie could my partner watch on repeat forever?",
+  "What does my partner do to treat themselves after a hard day?",
+  "What's my partner's most-used phrase or expression?",
+];
+
+let quizIdx=0;
+
+function initQuiz(){
+  quizIdx=0;
+  restoreCard('quiz-card','🧠','About your partner…','quiz-q');
+  document.getElementById('quiz-hint').style.display='block';
+  document.getElementById('quiz-ta').style.display='block';
+  document.getElementById('quiz-ta').value='';
+  const nb=document.getElementById('quiz-nxt');
+  nb.textContent='Reveal & Next →'; nb.onclick=quizNext;
+  renderQuiz();
+}
+
+function renderQuiz(){
+  if(quizIdx>=QUIZ.length){ quizEnd(); return; }
+  document.getElementById('quiz-q').textContent=QUIZ[quizIdx];
+  document.getElementById('quiz-ta').value='';
+  document.getElementById('quiz-ci').textContent='Q '+(quizIdx+1);
+  document.getElementById('quiz-pf').style.width=(quizIdx/QUIZ.length*100)+'%';
+  pop('quiz-card');
+}
+
+function quizNext(){ quizIdx++; renderQuiz(); }
+
+function quizEnd(){
+  document.getElementById('quiz-card').innerHTML=`<div class="result"><div class="re">💜</div><div class="rt">Compare &amp; Discuss!</div><div class="rs">Share your answers and see who knew who better 😄<br>The real reward is learning something new 💕</div></div>`;
+  document.getElementById('quiz-hint').style.display='none';
+  document.getElementById('quiz-ta').style.display='none';
+  const nb=document.getElementById('quiz-nxt');
+  nb.textContent='Play Again 🔄';
+  nb.onclick=initQuiz;
+  confetti();
+}
+
+/* ══════════════════════════════════════════
+   BUCKET LIST
+══════════════════════════════════════════ */
+const BUCKETS=[
+  {id:1,cat:'travel',e:'🗼',t:'Visit Paris together',d:'Croissants, the Eiffel Tower, and a perfect sunset'},
+  {id:2,cat:'travel',e:'🌌',t:'See the Northern Lights',d:'Chase the aurora in Iceland or Norway'},
+  {id:3,cat:'travel',e:'🚗',t:'Road trip with zero plan',d:'Just go. Figure it out as you drive.'},
+  {id:4,cat:'travel',e:'🏔️',t:'Watch a sunrise from a mountaintop',d:'Hike up the night before and wait for it together'},
+  {id:5,cat:'travel',e:'🏡',t:'Rent a cabin for a long weekend',d:'Just the two of you, no agenda whatsoever'},
+  {id:6,cat:'travel',e:'🌉',t:'Walk across a famous bridge',d:'Golden Gate, Charles Bridge, Brooklyn Bridge…'},
+  {id:7,cat:'travel',e:'🌏',t:'Explore a city new to both of you',d:'Navigate somewhere neither of you has ever been'},
+  {id:8,cat:'travel',e:'🏯',t:'Visit Japan together',d:'Cherry blossoms, ramen, and ancient temples'},
+  {id:9,cat:'xp',e:'💃',t:'Take a dance class together',d:'Salsa, tango, or whatever makes you laugh most'},
+  {id:10,cat:'xp',e:'🎸',t:'Go to a live concert',d:'Of a band you both love, obviously'},
+  {id:11,cat:'xp',e:'🌠',t:'Watch a meteor shower',d:'Lie on a blanket and count shooting stars'},
+  {id:12,cat:'xp',e:'🖼️',t:'Museum marathon',d:'Rate every single painting with made-up critiques'},
+  {id:13,cat:'xp',e:'📸',t:'Take silly photo booth pictures',d:'Keep the photo strip forever'},
+  {id:14,cat:'xp',e:'🌅',t:'Farmers market Sunday morning',d:'Fresh flowers, weird snacks, wandering slowly'},
+  {id:15,cat:'xp',e:'🎬',t:'Drive-in movie night',d:'Old-school and completely romantic'},
+  {id:16,cat:'xp',e:'🎪',t:'Go to a carnival or fair',d:'Win a stuffed animal — or really try to'},
+  {id:17,cat:'food',e:'🍝',t:'Make homemade pasta from scratch',d:'Flour everywhere, worth every single minute'},
+  {id:18,cat:'food',e:'🍕',t:'Find the best pizza in a new city',d:'A very serious research mission'},
+  {id:19,cat:'food',e:'🍰',t:'Go on a dessert crawl',d:'Bakery to bakery to bakery. No apologies.'},
+  {id:20,cat:'food',e:'🥞',t:'Breakfast in bed from scratch',d:'Pancakes, orange juice, the full experience'},
+  {id:21,cat:'food',e:'👩‍🍳',t:"Cook each other's childhood meals",d:'Share the recipe, share the memory'},
+  {id:22,cat:'food',e:'🍱',t:'Take a cooking class together',d:'Japanese, French, Italian — you pick'},
+  {id:23,cat:'home',e:'🏰',t:'Build a blanket fort & watch movies all day',d:'Snacks required. Phones forbidden.'},
+  {id:24,cat:'home',e:'🎲',t:'Board game tournament',d:'Best of 5. Trash talk absolutely allowed.'},
+  {id:25,cat:'home',e:'🍪',t:'Bake cookies at midnight',d:'No reason needed whatsoever'},
+  {id:26,cat:'home',e:'🎞️',t:'Film festival weekend',d:'Pick a director or theme and go really deep'},
+  {id:27,cat:'home',e:'🃏',t:'Learn a new card game together',d:'Then immediately become obsessed with it'},
+  {id:28,cat:'home',e:'🌿',t:'Start a little plant collection together',d:'Something living that grows with you'},
+  {id:29,cat:'mile',e:'👨‍👩‍👧',t:"Meet each other's families",d:'The real-deal introduction moment'},
+  {id:30,cat:'mile',e:'🐶',t:'Adopt a pet together',d:'Name TBD — but very very important'},
+  {id:31,cat:'mile',e:'📅',t:'Plan a trip 1 year from now',d:'Put it on the calendar and make it real'},
+  {id:32,cat:'mile',e:'🎵',t:'Create your official shared playlist',d:'Every song tells a story from your timeline'},
+  {id:33,cat:'mile',e:'📔',t:'Start a journal you write together',d:'Entries, doodles, tickets, little mementos'},
+  {id:34,cat:'mile',e:'📷',t:'Take professional photos together',d:'Properly dressed. Completely in love.'},
+  {id:35,cat:'mile',e:'🏠',t:"Find a spot that's truly \"ours\"",d:'A coffee shop, a bench, a neighbourhood corner'},
+];
+
+let hearted=new Set(), bCat='all';
+
+function initBucket(){ bCat='all'; renderBucket(); }
+
+function bTab(cat,el){
+  document.querySelectorAll('.btab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  bCat=cat; renderBucket();
+}
+
+function renderBucket(){
+  const c=document.getElementById('bitems');
+  c.innerHTML='';
+  let items;
+  if(bCat==='all')  items=[...BUCKETS];
+  else if(bCat==='wish') items=BUCKETS.filter(i=>hearted.has(i.id));
+  else items=BUCKETS.filter(i=>i.cat===bCat);
+
+  document.getElementById('bc-num').textContent=hearted.size;
+
+  if(bCat==='wish'&&items.length===0){
+    c.innerHTML='<div class="b-empty">💛 Heart things you want to do together!<br>They\'ll all show up here.</div>';
+    return;
+  }
+
+  items.forEach(item=>{
+    const on=hearted.has(item.id);
+    const d=document.createElement('div');
+    d.className='bitem'+(on?' on':'');
+    d.innerHTML=`<div class="bem">${item.e}</div>
+      <div class="btxt"><h4>${item.t}</h4><p>${item.d}</p></div>
+      <div class="bheart ${on?'on':''}" data-id="${item.id}">${on?'💛':'🤍'}</div>`;
+    const hb=d.querySelector('.bheart');
+    const toggle=()=>{
+      if(hearted.has(item.id)) hearted.delete(item.id);
+      else { hearted.add(item.id); miniConfetti(); }
+      renderBucket();
+    };
+    hb.addEventListener('click',e=>{e.stopPropagation();toggle();});
+    d.addEventListener('click',toggle);
+    c.appendChild(d);
+  });
+}
+
+/* ══ HELPERS ══ */
+function pop(id){
+  const el=document.getElementById(id);
+  el.classList.remove('pop');
+  void el.offsetWidth;
+  el.classList.add('pop');
+}
+
+function restoreCard(cardId,emoji,cat,qId){
+  document.getElementById(cardId).innerHTML=`
+    <span class="cemoji">${emoji}</span>
+    <div class="ccat">${cat}</div>
+    <div class="cq" id="${qId}">—</div>`;
+}
+</script>
+</body>
+</html>
